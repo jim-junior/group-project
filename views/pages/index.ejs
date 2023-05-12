@@ -16,8 +16,13 @@
           <div class="header-content col-md-6">
             <h1 class="header-heading display-4">Welcome to Group A PMS</h1>
             <p class="lead">The Number #1 real-estate marketplace in the world</p>
-            <a class="btn btn-primary btn-lg" href="/auth" role="button">Register</a>
-            <a class="btn btn-success btn-lg" href="/auth" role="button">Login</a>
+
+            <% if (user) { %>
+              <a class="btn btn-success btn-lg" href="/dashboard/<%= user.type %>" role="button">Go To Dashoard</a>
+              <% } else { %>
+                <a class="btn btn-primary btn-lg" href="/auth" role="button">Register</a>
+                <a class="btn btn-success btn-lg" href="/auth?action=login" role="button">Login</a>
+                <% } %>
           </div>
         </div>
       </div>

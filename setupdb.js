@@ -16,18 +16,12 @@ SELECT * FROM users
 
 
 
-fs.readFile('./schema.sql', 'utf8', (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log(data);
-  connection.execute(qu, (err, i, j) => {
-    console.log("An Error occured while trying to setup database")
-    console.log("=======================")
-    console.log(err)
-    console.log(i)
-    console.log(j)
-    console.log("=======================")
-  })
-});
+
+connection.execute(qu, (err, i, j) => {
+  console.log("An Error occured while trying to setup database")
+  console.log("=======================")
+  console.log(err)
+  console.log(i)
+  console.log(j)
+  console.log("===========`============")
+})

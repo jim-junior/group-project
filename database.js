@@ -23,7 +23,8 @@ async function getUserByEmail(email) {
   const queryString = `SELECT * FROM users WHERE email = ?`
 
   const result = await pool.query(queryString, [email])
-  return result[0][0]
+  const user = result[0][0]
+  return user
 }
 
 async function getUserById(id) {
