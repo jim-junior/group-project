@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head.ejs') %>
+    <title>Login or Register</title>
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+  <%- include('../partials/navbar.ejs') %>
+
+    <main class="root">
+
+      <div class="content-card">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
+              type="button" role="tab" aria-controls="pills-home" aria-selected="true">Register</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+              type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Login</button>
+          </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+          <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"
+            tabindex="0">
+            <form action="/auth/register" method="POST">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" required>
+                <div id="nameHelp" class="form-text">Enter your full name</div>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input name="phone" type="tel" class="form-control" id="phone" aria-describedby="phoneHelp" required>
+                <div id="phoneHelp" class="form-text">Enter your phone number</div>
+              </div>
+              <!-- Account type radio buttons -->
+              <div class="mb-3">
+                <select required class="form-select form-select-sm" aria-label=".form-select-sm example">
+                  <option selected>Select Account Type</option>
+                  <option value="1">Tenant</option>
+                  <option value="1">LandLord</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input name="password" type="password" class="form-control" id="password" required>
+              </div>
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" required>
+              </div>
+              <button type="submit" class="btn btn-success">Register</button>
+          </div>
+
+          <!--Login Form Tab-->
+          <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"
+            tabindex="0">
+            <form action="/auth/login" method="POST">
+              <% if (messages.error) { %>
+                <div class="alert alert-danger" role="alert">
+                  <%= messages.error %>
+                </div>
+                <% } %>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                      required>
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input name="password" type="password" class="form-control" id="password" required>
+                  </div>
+                  <button type="submit" class="btn btn-success">Login</button>
+          </div>
+        </div>
+      </div>
+
+
+    </main>
+
+    <%- include('../partials/scripts.ejs') %>
+</body>
+
+</html>

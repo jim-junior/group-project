@@ -1,0 +1,30 @@
+.header {
+  /* backgroud with linear gradient and image */
+  background: linear-gradient(to right,#000000e1,#00000011), url(/assets/img/pexels-expect-best-323780.jpg);
+  background-position: center;
+  background-attachment: scroll;
+  background-size: cover;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 2rem;
+}
+
+.header-content {
+  width: 100%;
+  color: white;
+}
+
+.header-heading {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.explore-properties-heading {
+  font-weight: bold;
+  margin: 25px;
+  text-align: center;
+}

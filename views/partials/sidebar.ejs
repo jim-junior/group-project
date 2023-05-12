@@ -1,0 +1,40 @@
+<!-- COPILOT PROMPT: Bootstrap sticky sidebar with dark theme -->
+
+<nav class="sidebar col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse" id="sidebarMenu">
+  <div class="position-sticky pt-3">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/dashboard">
+          <i class="bi bi-speedometer2"></i>
+          Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/dashboard/users">
+          <i class="bi bi-people-fill"></i>
+          Tenants
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/dashboard/roles">
+          <i class="bi bi-houses-fill"></i>
+          Properties
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/dashboard/permissions">
+          <i class="bi bi-house-add-fill"></i>
+          Property Leases
+        </a>
+      </li>
+      <!-- Logout item -->
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">
+          <i class="bi bi-box-arrow-right"></i>
+          Logout
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>

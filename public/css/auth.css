@@ -1,0 +1,20 @@
+.root {
+  background: linear-gradient(to top, #000000e1, #00000094), url(/assets/img/pexels-david-mcbee-1546168.jpg);
+    background-position: center;
+    background-attachment: scroll;
+    background-size: cover;
+    height: 150vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 2rem;
+}
+
+.content-card {
+    background-color: #ffffffc5;
+    border-radius: 0;
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    width: 30rem;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
