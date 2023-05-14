@@ -1,0 +1,53 @@
+<form action="/dashboard/landlord/create-property" method="post" enctype="multipart/form-data">
+
+  <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <input name="title" type="text" class="form-control" id="title" aria-describedby="nameHelp" required>
+    <div id="nameHelp" class="form-text">Enter name of your property</div>
+  </div>
+
+  <div class="mb-3">
+    <label for="address" class="form-label">Address</label>
+    <input name="address" type="text" class="form-control" id="address" aria-describedby="addressHelp" required>
+    <div id="addressHelp" class="form-text">Enter address of your property</div>
+
+  </div>
+
+  <div class="mb-3">
+    <label for="price" class="form-label">Price</label>
+    <input name="price" type="text" class="form-control" id="price" aria-describedby="priceHelp" required>
+    <div id="priceHelp" class="form-text">Enter price of your property</div>
+
+  </div>
+
+  <div class="mb-3">
+    <label for="type" class="form-label">Type</label>
+    <input name="type" type="text" class="form-control" id="type" aria-describedby="typeHelp" required>
+    <div id="typeHelp" class="form-text">Enter type of your property</div>
+  </div>
+
+  <div class="mb-3">
+    <label for="bedrooms" class="form-label">Bedrooms</label>
+    <input name="bedrooms" type="text" class="form-control" id="bedrooms" aria-describedby="bedroomsHelp" required>
+    <div id="bedroomsHelp" class="form-text">Enter number of bedrooms in your property</div>
+  </div>
+
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea name="description" type="text" class="form-control" id="description" aria-describedby="descriptionHelp"
+      required></textarea>
+    <div id="descriptionHelp" class="form-text">Enter description of your property</div>
+  </div>
+
+  <!--Images-->
+
+  <div class="mb-3">
+    <label for="image" class="form-label">Image</label>
+    <input name="image" type="file" class="form-control" id="image" aria-describedby="imageHelp" multiple required>
+    <div id="imageHelp" class="form-text">Upload image of your property</div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+
+
+</form>

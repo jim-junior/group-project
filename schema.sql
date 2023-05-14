@@ -14,9 +14,9 @@ CREATE TABLE properties (
     description TEXT NOT NULL,
     price TEXT NOT NULL,
     address TEXT NOT NULL,
-    city TEXT NOT NULL,
-    state TEXT NOT NULL,
-    country TEXT NOT NULL,
+    type TEXT NOT NULL,
+    bedrooms INTEGER NOT NULL,
+    rented BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     landlord INTEGER NOT NULL,
     tenant INTEGER,
@@ -30,9 +30,8 @@ CREATE TABLE property_drafts (
     description TEXT NOT NULL,
     price TEXT NOT NULL,
     address TEXT NOT NULL,
-    city TEXT NOT NULL,
-    state TEXT NOT NULL,
-    country TEXT NOT NULL,
+    type TEXT NOT NULL,
+    bedrooms INTEGER NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     landlord INTEGER NOT NULL,
     FOREIGN KEY (landlord) REFERENCES users (id)
@@ -44,8 +43,10 @@ CREATE TABLE images (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     url TEXT NOT NULL,
     property_id INTEGER,
+    property_draft INTEGER,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (property_id) REFERENCES properties (id)
+    FOREIGN KEY (property_id) REFERENCES properties (id),
+    FOREIGN KEY (property_draft) REFERENCES property_drafts (id)
 );
 
 

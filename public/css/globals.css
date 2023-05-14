@@ -27,7 +27,7 @@ a {
   top: 0px;
   left: 0px;
   right: 0px;
-  z-index: 1000;
+  z-index: 3;
   color: white;
 }
 
@@ -35,4 +35,15 @@ a {
   font-size: 1.5rem;
   font-weight: bold;
   color: greenyellow;
+}
+
+.sidebar {
+  background-color: #33393f !important;
+  border-right: 1px solid #ffffff3a;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.auth-navbar {
+  z-index: 5;
 }

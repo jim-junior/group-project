@@ -1,0 +1,30 @@
+<br />
+<h3>Create New Property</h3>
+<hr />
+
+<p>You should note that when a new Property is created. Its first Drafted and goes throught review by the administrator.
+</p>
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Create New Property
+</button>
+
+<br />
+<hr />
+<%- include('./property-drafts.ejs') %>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Draft New Property</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <%- include('./create.ejs') %>
+        </div>
+      </div>
+    </div>
+  </div>
