@@ -3,11 +3,11 @@
 const mysql = require("mysql2")
 
 const pool = mysql.createPool({
-  host: "containers-us-west-163.railway.app",
+  host: "containers-us-west-157.railway.app",
   user: "root",
-  password: "bvxFXE26Q7m1sJjMgYz5",
+  password: "9lti4WyqKDACAzJz4N7l",
   database: "railway",
-  port: 6691
+  port: 7721
 }).promise()
 
 
@@ -163,10 +163,10 @@ async function updatePropertyById(id, title, description, price, address, type, 
 
 
 
-async function createImageForProperty(url, property_draft) {
-  const queryString = `INSERT INTO images (url, property_draft) values (?, ?)`
+async function createImageForProperty(url, property) {
+  const queryString = `INSERT INTO images (url, property_id) values (?, ?)`
 
-  const query = await pool.query(queryString, [url, property_draft])
+  const query = await pool.query(queryString, [url, property])
 
   return query
 }
@@ -174,11 +174,27 @@ async function createImageForProperty(url, property_draft) {
 
 
 async function getPropertyImages(propertyId) {
-  const queryString = `SELECT * FROM images WHERE property_draft = ?`
+  const queryString = `SELECT * FROM images WHERE property_id = ?`
 
   const query = await pool.query(queryString, [propertyId])
   const images = query[0]
   return images
+}
+
+async function getPropertyDraftImages(propertyId) {
+  const queryString = `SELECT * FROM image_drafts WHERE property_draft = ?`
+
+  const query = await pool.query(queryString, [propertyId])
+  const images = query[0]
+  return images
+}
+
+async function createImageDraft(url, property_draft) {
+  const queryString = `INSERT INTO image_drafts (url, property_draft) values (?, ?)`
+
+  const query = await pool.query(queryString, [url, property_draft])
+
+  return query
 }
 
 
@@ -204,5 +220,7 @@ module.exports = {
   deletePropertyById,
   updatePropertyById,
   createImageForProperty,
-  getPropertyImages
+  getPropertyImages,
+  getPropertyDraftImages,
+  createImageDraft
 }

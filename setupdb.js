@@ -3,121 +3,36 @@ const fs = require('fs');
 
 
 const connection = mysql.createConnection({
-  host: "containers-us-west-163.railway.app",
+  host: "containers-us-west-157.railway.app",
   user: "root",
-  password: "bvxFXE26Q7m1sJjMgYz5",
+  password: "9lti4WyqKDACAzJz4N7l",
   database: "railway",
-  port: 6691
+  port: 7721
 })
 
-const tables = [
-  `CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    password TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    type TEXT NOT NULL,
-    phonenumber TEXT NOT NULL
-);`,
-  `CREATE TABLE properties (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    price TEXT NOT NULL,
-    address TEXT NOT NULL,
-    type TEXT NOT NULL,
-    bedrooms INTEGER NOT NULL,
-    rented BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    landlord INTEGER NOT NULL,
-    tenant INTEGER,
-    FOREIGN KEY (landlord) REFERENCES users (id),
-    FOREIGN KEY (tenant) REFERENCES users (id)
-);`,
-  `
-CREATE TABLE property_drafts (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    price TEXT NOT NULL,
-    address TEXT NOT NULL,
-    type TEXT NOT NULL,
-    bedrooms INTEGER NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    landlord INTEGER NOT NULL,
-    FOREIGN KEY (landlord) REFERENCES users (id)
-);
-`,
-  `CREATE TABLE images (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    url TEXT NOT NULL,
-    property_id INTEGER,
-    property_draft INTEGER,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (property_id) REFERENCES properties (id),
-    FOREIGN KEY (property_draft) REFERENCES property_drafts (id)
-);`,
-  `CREATE TABLE property_requests (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    property_id INTEGER NOT NULL,
-    tenant_id INTEGER NOT NULL,
-    landlord_id INTEGER NOT NULL,
-    status TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (property_id) REFERENCES properties (id),
-    FOREIGN KEY (tenant_id) REFERENCES users (id),
-    FOREIGN KEY (landlord_id) REFERENCES users (id)
-);`,
-  `CREATE TABLE comments (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    property_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    comment TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (property_id) REFERENCES properties (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
-);`,
-  `CREATE TABLE notifications (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_id INTEGER NOT NULL,
-    message TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (user_id) REFERENCES users (id)
-);`,
-  `CREATE TABLE chats (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    sender_id INTEGER NOT NULL,
-    receiver_id INTEGER NOT NULL,
-    message TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (sender_id) REFERENCES users (id),
-    FOREIGN KEY (receiver_id) REFERENCES users (id)
-);`,
-  `CREATE TABLE payments (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    property_id INTEGER NOT NULL,
-    tenant_id INTEGER NOT NULL,
-    landlord_id INTEGER NOT NULL,
-    amount TEXT NOT NULL,
-    status TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (property_id) REFERENCES properties (id),
-    FOREIGN KEY (tenant_id) REFERENCES users (id),
-    FOREIGN KEY (landlord_id) REFERENCES users (id)
-);`
-]
+const sql_commands_file = "./schema.sql"
 
+const sql_commands = fs.readFileSync(sql_commands_file, 'utf8')
 
+// separate commands by ;
+const commands = sql_commands.split(";")
 
+// remove empty commands
+const filtered_commands = commands.filter(command => command.length > 0)
 
-for (let i = 0; i < tables.length; i++) {
-  connection.query(tables[i], function (err, results, fields) {
-    console.log(">>> Successfully created table {", i, "}")
+// run each command
+filtered_commands.forEach(command => {
+  connection.query(command, function (err, results, fields) {
     if (err) {
       console.log(err.message)
+    } else {
+      // get table name from command
+      const table_name = command.split(" ")[2]
+      console.log(`Table ${table_name} created`)
     }
   })
 }
+
+)
 
 connection.end()

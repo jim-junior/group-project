@@ -43,12 +43,17 @@ CREATE TABLE images (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     url TEXT NOT NULL,
     property_id INTEGER,
-    property_draft INTEGER,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (property_id) REFERENCES properties (id),
-    FOREIGN KEY (property_draft) REFERENCES property_drafts (id)
+    FOREIGN KEY (property_id) REFERENCES properties (id) ON DELETE CASCADE,
 );
 
+CREATE TABLE image_drafts (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    url TEXT NOT NULL,
+    property_draft INTEGER,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (property_draft) REFERENCES property_drafts (id) ON DELETE CASCADE
+);
 
 CREATE TABLE property_requests (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,

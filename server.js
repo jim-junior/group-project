@@ -21,7 +21,9 @@ const {
   deletePropertyById,
   updatePropertyById,
   createImageForProperty,
-  getPropertyImages
+  getPropertyImages,
+  createImageDraft,
+  getPropertyDraftImages
 } = require("./database");
 const initializePassport = require("./passport.config")
 const passport = require("passport")
@@ -128,6 +130,8 @@ app.post("/auth/register", async (req, res) => {
 });
 
 
+
+
 app.post("/auth/login", passport.authenticate("local", {
   successRedirect: "/",
   failureRedirect: "/auth?action=login",
@@ -148,12 +152,15 @@ app.get("/dashboard/landlord", checkAuthenticated, async (req, res) => {
   // Get all property drafts for landlord with their images 
   const propertyDrafts = await getPropertyDraftsForLandlord(user.id)
   const propertyDraftsWithImages = await Promise.all(propertyDrafts.map(async (propertyDraft) => {
-    const images = await getPropertyImages(propertyDraft.id)
+    const images = await getPropertyDraftImages(propertyDraft.id)
+    console.log(images)
     return {
       ...propertyDraft,
       images
     }
   }))
+
+  console.log(propertyDraftsWithImages)
 
 
   res.render("pages/landlord", {
@@ -174,27 +181,64 @@ app.post("/dashboard/landlord/create-property", upload.array('image', 5), async 
     try {
       const property = await createPropertyDraft(title, description, price, address, type, bedrooms, user.id)
       images.forEach(async (image) => {
-        await createImageForProperty(image.path, property.insertId)
+        const imgPath = image.path
+        // change image path to unix style
+        const imgPathUnix = imgPath.replace(/\\/g, "/")
+        // add / to the beginning of the path
+        const imgPathUnixWithSlash = "/" + imgPathUnix
+        await createImageDraft(imgPathUnixWithSlash, property.insertId)
       })
       res.redirect("/dashboard/landlord")
     } catch (error) {
-      res.render("pages/landlord", {
-        user,
-        messages: {
-          error: "Error creating property"
-        }
-      })
+      res.redirect("/dashboard/landlord")
     }
   } else {
-    res.render("pages/landlord", {
-      user,
-      messages: {
-        error: "Please fill all the fields"
-      }
-    })
+    res.redirect("/dashboard/landlord")
   }
 })
 
+app.post("/dashboard/landlord/property-draft/:id/update", upload.array('image', 5), async (req, res) => {
+  const { title, description, price, address, type, bedrooms } = req.body
+  const user = await req.user
+  const propertyDraftId = req.params.id
+  const images = req.files
+  if (title && description && price && address && type && bedrooms) {
+    try {
+      await updatePropertyDraftById(title, description, price, address, type, bedrooms, propertyDraftId)
+      if (images) {
+        images.forEach(async (image) => {
+          await createImageDraft(image.path, propertyDraftId)
+        })
+      }
+      res.redirect("/dashboard/landlord")
+    } catch (error) {
+      res.redirect("/dashboard/landlord")
+    }
+  } else {
+    res.redirect("/dashboard/landlord")
+  }
+})
+
+
+
+
+
+
+app.get("/dashboard/landlord/property-draft/:id/delete", checkAuthenticated, async (req, res) => {
+  const user = await req.user
+  const propertyDraftId = req.params.id
+  const propertyDraft = await getPropertyDraftById(propertyDraftId)
+  if (propertyDraft) {
+    if (propertyDraft) {
+      await deletePropertyDraftById(propertyDraftId)
+      res.redirect("/dashboard/landlord")
+    } else {
+      res.redirect("/dashboard/landlord")
+    }
+  } else {
+    res.redirect("/dashboard/landlord")
+  }
+})
 
 
 
