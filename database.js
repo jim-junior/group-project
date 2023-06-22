@@ -198,6 +198,63 @@ async function createImageDraft(url, property_draft) {
 }
 
 
+async function getPropertyDrafts() {
+  const queryString = `SELECT * FROM property_drafts`
+
+  const query = await pool.query(queryString)
+  const properties = query[0]
+  return properties
+}
+
+
+
+async function createPropertyFromDraft(propertyDraftId) {
+  const queryString = `INSERT INTO property (title, description, price, address, type, bedrooms, landlord) SELECT title, description, price, address, type, bedrooms, landlord FROM property_drafts WHERE id = ?`
+
+  const query = await pool.query(queryString, [propertyDraftId])
+  return query
+}
+
+
+async function getPropertiesLikedByUser(userId) {
+  const queryString = `SELECT * FROM property_likes WHERE user_id = ?`
+
+  const query = await pool.query(queryString, [userId])
+  const properties = query[0]
+  return properties
+}
+
+async function getPropertyLikesForProperty(propertyId) {
+  const queryString = `SELECT * FROM property_likes WHERE property_id = ?`
+
+  const query = await pool.query(queryString, [propertyId])
+
+  const likes = query[0]
+  return likes
+}
+
+async function createPropertyLike(propertyId, userId) {
+  const queryString = `INSERT INTO property_likes (property_id, user_id) values (?, ?)`
+
+  const query = await pool.query(queryString, [propertyId, userId])
+
+  return query
+}
+
+async function deletePropertyLike(propertyId, userId) {
+  const queryString = `DELETE FROM property_likes WHERE property_id = ? AND user_id = ?`
+
+  const query = await pool.query(queryString, [propertyId, userId])
+  return query
+}
+
+async function getEditedProperties() {
+  const queryString = `SELECT * FROM property WHERE edited = 1`
+
+  const query = await pool.query(queryString)
+  const properties = query[0]
+  return properties
+}
 
 
 module.exports = {
@@ -222,5 +279,12 @@ module.exports = {
   createImageForProperty,
   getPropertyImages,
   getPropertyDraftImages,
-  createImageDraft
+  createImageDraft,
+  getPropertyDrafts,
+  createPropertyFromDraft,
+  getPropertiesLikedByUser,
+  getPropertyLikesForProperty,
+  getEditedProperties,
+  createPropertyLike,
+  deletePropertyLike
 }

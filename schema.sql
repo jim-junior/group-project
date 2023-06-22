@@ -20,6 +20,7 @@ CREATE TABLE properties (
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     landlord INTEGER NOT NULL,
     tenant INTEGER,
+    edited BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (landlord) REFERENCES users (id),
     FOREIGN KEY (tenant) REFERENCES users (id)
 );
@@ -107,4 +108,14 @@ CREATE TABLE payments (
     FOREIGN KEY (property_id) REFERENCES properties (id),
     FOREIGN KEY (tenant_id) REFERENCES users (id),
     FOREIGN KEY (landlord_id) REFERENCES users (id)
+);
+
+
+CREATE TABLE property_likes (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    property_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (property_id) REFERENCES properties (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );

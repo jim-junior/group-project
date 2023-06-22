@@ -5,26 +5,18 @@ const {
   createUser,
   getUserByEmail,
   getUserById,
-  getPropertiesForLandlord,
-  getPropertyById,
-  getPropertiesForTenant,
-  createProperty,
   createPropertyDraft,
   getPropertyDraftsForLandlord,
   getPropertyDraftById,
   deletePropertyDraftById,
   updatePropertyDraftById,
-  createPropertyRequest,
-  getPropertyRequestsForLandlord,
-  getPropertyRequestsForTenant,
-  getPropertyRequestById,
-  deletePropertyById,
-  updatePropertyById,
-  createImageForProperty,
-  getPropertyImages,
   createImageDraft,
   getPropertyDraftImages
 } = require("./database");
+const {
+  adminDashboardController,
+  approvePropertyDraft
+} = require("./controllers/AdminController")
 const initializePassport = require("./passport.config")
 const passport = require("passport")
 const flash = require("express-flash")
@@ -160,15 +152,25 @@ app.get("/dashboard/landlord", checkAuthenticated, async (req, res) => {
     }
   }))
 
-  console.log(propertyDraftsWithImages)
+  const properties = await getPropertiesForLandlord(user.id)
+  const propertiesWithImages = await Promise.all(properties.map(async (property) => {
+    const images = await getPropertyImages(property.id)
+    return {
+      ...property,
+      images
+    }
+  }))
 
 
   res.render("pages/landlord", {
     user: user,
-    propertyDrafts: propertyDraftsWithImages
+    propertyDrafts: propertyDraftsWithImages,
+    properties: propertiesWithImages
   });
 });
 
+app.get("/dashboard/admin", checkAuthenticated, adminDashboardController);
+app.get("/dashboard/admin/property-draft/:id/approve", checkAuthenticated, approvePropertyDraft)
 
 
 // A route that uploads a property with multiple images 
@@ -231,14 +233,27 @@ app.get("/dashboard/landlord/property-draft/:id/delete", checkAuthenticated, asy
   if (propertyDraft) {
     if (propertyDraft) {
       await deletePropertyDraftById(propertyDraftId)
-      res.redirect("/dashboard/landlord")
+      if (user.type === "admin") {
+        res.redirect("/dashboard/admin")
+      } else {
+        res.redirect("/dashboard/landlord")
+      }
+    } else {
+      if (user.type === "admin") {
+        res.redirect("/dashboard/admin")
+      } else {
+        res.redirect("/dashboard/landlord")
+      }
+    }
+  } else {
+    if (user.type === "admin") {
+      res.redirect("/dashboard/admin")
     } else {
       res.redirect("/dashboard/landlord")
     }
-  } else {
-    res.redirect("/dashboard/landlord")
   }
 })
+
 
 
 
