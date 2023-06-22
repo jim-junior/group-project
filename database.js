@@ -256,6 +256,14 @@ async function getEditedProperties() {
   return properties
 }
 
+async function approveEditedProperty(propertyId) {
+  const queryString = `UPDATE property SET edited = 0 WHERE id = ?`
+
+  const query = await pool.query(queryString, [propertyId])
+
+  return query
+}
+
 
 module.exports = {
   createUser,
@@ -286,5 +294,6 @@ module.exports = {
   getPropertyLikesForProperty,
   getEditedProperties,
   createPropertyLike,
-  deletePropertyLike
+  deletePropertyLike,
+  approveEditedProperty
 }

@@ -1,42 +1,32 @@
 const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt")
+const { checkAuthenticated } = require("./middleware/auth");
 const {
-  createUser,
   getUserByEmail,
   getUserById,
-  createPropertyDraft,
-  getPropertyDraftsForLandlord,
-  getPropertyDraftById,
-  deletePropertyDraftById,
-  updatePropertyDraftById,
-  createImageDraft,
-  getPropertyDraftImages
 } = require("./database");
-const {
-  adminDashboardController,
-  approvePropertyDraft
-} = require("./controllers/AdminController")
 const initializePassport = require("./passport.config")
 const passport = require("passport")
 const flash = require("express-flash")
-const multer = require('multer')
+const { registerUser } = require("./controllers/AuthController");
+const { upload } = require("./middleware/storage")
+const {
+  landloardDashboardController,
+  createPropertyDraftController,
+  updatePropertyDraftController,
+  deletePropertyDraftController
+} = require("./controllers/LandloardController");
+const {
+  adminDashboardController,
+  approvePropertyDraft,
+  approveEditedPropertyController
+} = require("./controllers/AdminController")
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    // generate a random string of 9 characters
-    const randomString = Math.random().toString(36).substring(2, 15)
-    cb(null, randomString + file.originalname)
-  }
-})
 
 
-const upload = multer({
-  storage: storage
-})
+
+
 
 
 
@@ -58,18 +48,6 @@ app.use(passport.session())
 
 initializePassport(passport, getUserByEmail, getUserById)
 
-/** 
- * A middleware that checks if a user is authenticated
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- * @param {import("express").NextFunction} next
-  */
-const checkAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next()
-  }
-  res.redirect("/auth?action=login")
-}
 
 
 app.get("/", async (req, res) => {
@@ -86,42 +64,6 @@ app.get("/auth", (req, res) => {
   res.render("pages/auth");
 });
 
-app.post("/auth/register", async (req, res) => {
-  const { name, password, email, phone, type } = req.body
-  // Check if all fields are filled
-  if (name && password && email && phone && type) {
-    // Check if email already exists
-    const user = await getUserByEmail(email)
-    if (user) {
-      res.render("pages/auth", {
-        messages: {
-          signupError: "Email already exists"
-        }
-      })
-    } else {
-      try {
-        // Hash password
-        const hashedPass = await bcrypt.hash(password, 10)
-        createUser(name, hashedPass, email, phone, type)
-        res.redirect("/auth?action=login")
-      } catch (error) {
-        res.render("pages/auth", {
-          messages: {
-            signupError: "Error creating user"
-          }
-        })
-      }
-    }
-  } else {
-    res.render("pages/auth", {
-      messages: {
-        signupError: "Please fill all the fields"
-      }
-    })
-  }
-});
-
-
 
 
 app.post("/auth/login", passport.authenticate("local", {
@@ -131,6 +73,7 @@ app.post("/auth/login", passport.authenticate("local", {
 }))
 
 
+app.post("/auth/register", registerUser);
 
 app.get("/dashboard/tenant", checkAuthenticated, async (req, res) => {
   const user = await req.user
@@ -139,120 +82,18 @@ app.get("/dashboard/tenant", checkAuthenticated, async (req, res) => {
   });
 });
 
-app.get("/dashboard/landlord", checkAuthenticated, async (req, res) => {
-  const user = await req.user
-  // Get all property drafts for landlord with their images 
-  const propertyDrafts = await getPropertyDraftsForLandlord(user.id)
-  const propertyDraftsWithImages = await Promise.all(propertyDrafts.map(async (propertyDraft) => {
-    const images = await getPropertyDraftImages(propertyDraft.id)
-    console.log(images)
-    return {
-      ...propertyDraft,
-      images
-    }
-  }))
-
-  const properties = await getPropertiesForLandlord(user.id)
-  const propertiesWithImages = await Promise.all(properties.map(async (property) => {
-    const images = await getPropertyImages(property.id)
-    return {
-      ...property,
-      images
-    }
-  }))
-
-
-  res.render("pages/landlord", {
-    user: user,
-    propertyDrafts: propertyDraftsWithImages,
-    properties: propertiesWithImages
-  });
-});
+app.get("/dashboard/landlord", checkAuthenticated, landloardDashboardController);
 
 app.get("/dashboard/admin", checkAuthenticated, adminDashboardController);
 app.get("/dashboard/admin/property-draft/:id/approve", checkAuthenticated, approvePropertyDraft)
+app.get("/dashboard/admin/property-edit/:id/approve", checkAuthenticated, approveEditedPropertyController)
 
 
-// A route that uploads a property with multiple images 
-app.post("/dashboard/landlord/create-property", upload.array('image', 5), async (req, res) => {
-  const { title, description, price, address, type, bedrooms } = req.body
-  const user = await req.user
-  const images = req.files
-  if (title && description && price && address && type && bedrooms && images) {
+app.post("/dashboard/landlord/create-property", upload.array('image', 5), createPropertyDraftController)
 
-    try {
-      const property = await createPropertyDraft(title, description, price, address, type, bedrooms, user.id)
-      images.forEach(async (image) => {
-        const imgPath = image.path
-        // change image path to unix style
-        const imgPathUnix = imgPath.replace(/\\/g, "/")
-        // add / to the beginning of the path
-        const imgPathUnixWithSlash = "/" + imgPathUnix
-        await createImageDraft(imgPathUnixWithSlash, property.insertId)
-      })
-      res.redirect("/dashboard/landlord")
-    } catch (error) {
-      res.redirect("/dashboard/landlord")
-    }
-  } else {
-    res.redirect("/dashboard/landlord")
-  }
-})
+app.post("/dashboard/landlord/property-draft/:id/update", upload.array('image', 5), updatePropertyDraftController)
 
-app.post("/dashboard/landlord/property-draft/:id/update", upload.array('image', 5), async (req, res) => {
-  const { title, description, price, address, type, bedrooms } = req.body
-  const user = await req.user
-  const propertyDraftId = req.params.id
-  const images = req.files
-  if (title && description && price && address && type && bedrooms) {
-    try {
-      await updatePropertyDraftById(title, description, price, address, type, bedrooms, propertyDraftId)
-      if (images) {
-        images.forEach(async (image) => {
-          await createImageDraft(image.path, propertyDraftId)
-        })
-      }
-      res.redirect("/dashboard/landlord")
-    } catch (error) {
-      res.redirect("/dashboard/landlord")
-    }
-  } else {
-    res.redirect("/dashboard/landlord")
-  }
-})
-
-
-
-
-
-
-app.get("/dashboard/landlord/property-draft/:id/delete", checkAuthenticated, async (req, res) => {
-  const user = await req.user
-  const propertyDraftId = req.params.id
-  const propertyDraft = await getPropertyDraftById(propertyDraftId)
-  if (propertyDraft) {
-    if (propertyDraft) {
-      await deletePropertyDraftById(propertyDraftId)
-      if (user.type === "admin") {
-        res.redirect("/dashboard/admin")
-      } else {
-        res.redirect("/dashboard/landlord")
-      }
-    } else {
-      if (user.type === "admin") {
-        res.redirect("/dashboard/admin")
-      } else {
-        res.redirect("/dashboard/landlord")
-      }
-    }
-  } else {
-    if (user.type === "admin") {
-      res.redirect("/dashboard/admin")
-    } else {
-      res.redirect("/dashboard/landlord")
-    }
-  }
-})
+app.get("/dashboard/landlord/property-draft/:id/delete", checkAuthenticated, deletePropertyDraftController)
 
 
 

@@ -1,0 +1,42 @@
+<section id="property-drafts">
+  <div class="j">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 style="font-weight: bold;" class="h3">Properties </h3>
+        <hr>
+      </div>
+    </div>
+    <div id="property-draft-cards-grid" class="row">
+      <% if (properties.length> 0) { %>
+        <% properties.forEach(function(property) { %>
+
+          <div class="col-md-4">
+            <div class="card explore-properties-card">
+              <!--A random image of a house-->
+              <img src="<%= property.images[0].url %>" class="d-block w-100" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <%= property.title %>
+                </h5>
+                <p class="card-text">
+                  <%= property.description.slice(0, 50) %>
+                </p>
+                <!--Price-->
+                <p class="card-subtitle mb-2 text-body-secondary">Price: UGX <%= property.price %>
+                </p>
+                <a href="#" class="btn btn-success"><i class="bi bi-pencil-square"></i> Edit </a>
+                <a href="/dashboard/landlord/property/<%= property.id %>/delete" class="btn btn-danger"><i
+                    class="bi bi-trash"></i> Delete </a>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+            <% } else { %>
+              <div class="col-md-12">
+                <p>You have no property drafts.</p>
+              </div>
+              <% } %>
+
+
+    </div>
+</section>
