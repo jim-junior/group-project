@@ -5,6 +5,8 @@ const { checkAuthenticated } = require("./middleware/auth");
 const {
   getUserByEmail,
   getUserById,
+  getProperties,
+  getPropertyImages
 } = require("./database");
 const initializePassport = require("./passport.config")
 const passport = require("passport")
@@ -15,13 +17,21 @@ const {
   landloardDashboardController,
   createPropertyDraftController,
   updatePropertyDraftController,
-  deletePropertyDraftController
+  deletePropertyDraftController,
+  approvePropertyRequestController
 } = require("./controllers/LandloardController");
 const {
   adminDashboardController,
   approvePropertyDraft,
   approveEditedPropertyController
 } = require("./controllers/AdminController")
+const {
+  tenantDashboardController
+} = require("./controllers/TenantContoller")
+const {
+  propertyController,
+  propertyRequestController,
+} = require("./controllers/ProductController")
 
 
 
@@ -53,9 +63,25 @@ initializePassport(passport, getUserByEmail, getUserById)
 app.get("/", async (req, res) => {
   if (req.isAuthenticated()) {
     const user = await req.user
-    res.render("pages/index", { user: user })
+    const properties = await getProperties()
+
+    const propertiesWithImages = await Promise.all(properties.map(async (property) => {
+      const images = await getPropertyImages(property.id)
+      return {
+        ...property,
+        images: images
+      }
+    }))
+
+    res.render("pages/index", {
+      user: user,
+      properties: propertiesWithImages
+    })
   } else {
-    res.render("pages/index", { user: null })
+    res.render("pages/index", {
+      user: null,
+      properties: null
+    })
   }
 });
 
@@ -75,14 +101,14 @@ app.post("/auth/login", passport.authenticate("local", {
 
 app.post("/auth/register", registerUser);
 
-app.get("/dashboard/tenant", checkAuthenticated, async (req, res) => {
-  const user = await req.user
-  res.render("pages/tenant", {
-    user: user
-  });
-});
+
 
 app.get("/dashboard/landlord", checkAuthenticated, landloardDashboardController);
+
+app.get("/dashboard/tenant", checkAuthenticated, tenantDashboardController)
+
+app.get("/property/:id", checkAuthenticated, propertyController)
+app.get("/property/:id/request", checkAuthenticated, propertyRequestController)
 
 app.get("/dashboard/admin", checkAuthenticated, adminDashboardController);
 app.get("/dashboard/admin/property-draft/:id/approve", checkAuthenticated, approvePropertyDraft)
@@ -94,6 +120,8 @@ app.post("/dashboard/landlord/create-property", upload.array('image', 5), create
 app.post("/dashboard/landlord/property-draft/:id/update", upload.array('image', 5), updatePropertyDraftController)
 
 app.get("/dashboard/landlord/property-draft/:id/delete", checkAuthenticated, deletePropertyDraftController)
+
+app.get("/dashboard/landlord/property-request/:id/approve", checkAuthenticated, approvePropertyRequestController)
 
 
 

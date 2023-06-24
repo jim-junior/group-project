@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head.ejs') %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      <%= property.title %> | Product Page
+    </title>
+</head>
+
+<style>
+  .product-root {
+    margin-top: 70px;
+  }
+
+  .product-image {
+    text-align: center;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-details {
+    text-align: center;
+  }
+
+  .rating-stars {
+    color: #f1c40f;
+  }
+
+  .comments-form {
+    margin-top: 20px;
+  }
+
+  .comments-list {
+    margin-top: 20px;
+  }
+
+  .comment {
+    margin-bottom: 20px;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .comment-author {
+    font-weight: bold;
+  }
+
+  .comment-date {
+    color: #95a5a6;
+  }
+
+  .comment-text {
+    margin-top: 10px;
+  }
+
+  .comment-text::before {
+    content: '"';
+  }
+
+  .comment-text::after {
+    content: '"';
+  }
+
+  .comment-text::before,
+  .comment-text::after {
+    color: #95a5a6;
+  }
+
+  .comment-text::before {
+    margin-right: 5px;
+  }
+
+  .comment-text::after {
+    margin-left: 5px;
+  }
+
+  .comment-text::before,
+  .comment-text::after {
+    font-size: 20px;
+  }
+
+  .comment-text::before {
+    vertical-align: top;
+  }
+
+  .comment-text::after {
+    vertical-align: bottom;
+  }
+</style>
+
+<body>
+  <!-- A product oage using bootstrap and custom css includes like button, ratings, comments and comment form -->
+
+  <!-- Navbar -->
+  <%- include('../partials/navbar.ejs') %>
+
+    <div class="container product-root">
+      <div class="row">
+
+        <!-- Product overview -->
+        <div class="product-image col-md-6">
+          <img src="<%= images[0].url %>" alt="Product Image">
+        </div>
+
+        <!-- Product Details: name, description, price, rating -->
+        <div class="product-details col-md-6">
+          <h2>
+            <%= property.title %>
+          </h2>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
+          <p>Price: UGX <%= property.price %>
+          </p>
+          <p>Rating:
+            <span class="rating-stars">
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star"></i>
+            </span>
+          </p>
+          <a href="/property/<%= property.id %>/request" class="btn btn-primary">Lease Property</a>
+          <button class="btn btn-success"><i class="bi bi-hand-thumbs-up"></i></button>
+          <button class="btn btn-danger"><i class="bi bi-hand-thumbs-down"></i></button>
+          <!-- Rating select form -->
+
+          <form class="rating-form">
+            <div class="form-group">
+              <label for="rating">Rate this product</label>
+              <select class="form-control" id="rating">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+
+        <br />
+
+        <!-- Comments -->
+        <!-- Comments Form -->
+        <form class="comments-form col-md-12">
+          <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea class="form-control" id="comment" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <!-- Comments list -->
+
+        <div class="comments-list">
+          <div class="comment">
+            <div class="comment-header">
+              <h5 class="comment-author">Author</h5>
+              <span class="comment-date">Date</span>
+            </div>
+            <div class="comment-body">
+              <p class="comment-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
+            </div>
+          </div>
+          <div class="comment">
+            <div class="comment-header">
+              <h5 class="comment-author">Author</h5>
+              <span class="comment-date">Date</span>
+            </div>
+            <div class="comment-body">
+              <p class="comment-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
+            </div>
+          </div>
+          <div class="comment">
+            <div class="comment-header">
+              <h5 class="comment-author">Author</h5>
+              <span class="comment-date">Date</span>
+            </div>
+            <div class="comment-body">
+              <p class="comment-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+</body>
+
+</html>

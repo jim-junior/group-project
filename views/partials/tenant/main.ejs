@@ -2,18 +2,18 @@
   <div class="j">
     <div class="row">
       <div class="col-md-12">
-        <h3 style="font-weight: bold;" class="h3">Property Drafts</h3>
+        <h3 style="font-weight: bold;" class="h3">Properties </h3>
         <hr>
       </div>
     </div>
     <div id="property-draft-cards-grid" class="row">
-      <% if (propertyDrafts.length> 0) { %>
-        <% propertyDrafts.forEach(function(property) { %>
+      <% if (properties.length> 0) { %>
+        <% properties.forEach(function(property) { %>
 
           <div class="col-md-4">
             <div class="card explore-properties-card">
               <!--A random image of a house-->
-              <img src="<%= property.images[0].url %>" class="d-block w-100" alt="...">
+              <img src="<%= property.images[0]?.url %>" class="d-block w-100" alt="...">
               <div class="card-body">
                 <h5 class="card-title">
                   <%= property.title %>
@@ -24,15 +24,13 @@
                 <!--Price-->
                 <p class="card-subtitle mb-2 text-body-secondary">Price: UGX <%= property.price %>
                 </p>
-                <a href="/dashboard/landlord/property-draft/<%= property.id %>/delete" class="btn btn-danger"><i
-                    class="bi bi-trash"></i> Delete </a>
               </div>
             </div>
           </div>
           <% }) %>
             <% } else { %>
               <div class="col-md-12">
-                <p>You have no property drafts.</p>
+                <p>You have no property yet.</p>
               </div>
               <% } %>
 

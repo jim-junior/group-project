@@ -1,4 +1,4 @@
-
+// @ts-check
 
 const {
   getPropertyDrafts,
@@ -7,7 +7,8 @@ const {
   deletePropertyDraftById,
   getEditedProperties,
   getPropertyImages,
-  approveEditedProperty
+  approveEditedProperty,
+  createImageForProperty
 } = require("../database");
 
 
@@ -52,6 +53,10 @@ async function approvePropertyDraft(req, res) {
   try {
     const { id } = req.params;
     const property = await createPropertyFromDraft(id);
+    const images = await getPropertyDraftImages(id);
+    await Promise.all(images.map(async (image) => {
+      await createImageForProperty(image.url, property.insertId)
+    }))
     const propertyDraft = await deletePropertyDraftById(id);
     res.redirect("/dashboard/admin");
   } catch (error) {

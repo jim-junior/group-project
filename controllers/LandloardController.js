@@ -1,7 +1,9 @@
+//@ts-check
 const {
   createUser,
   getUserByEmail,
   getUserById,
+  getPropertiesForLandlord,
   createPropertyDraft,
   getPropertyDraftsForLandlord,
   getPropertyDraftById,
@@ -9,6 +11,13 @@ const {
   updatePropertyDraftById,
   createImageDraft,
   getPropertyDraftImages,
+  getPropertyImages,
+  deletePropertyById,
+  deletePropertyRequestById,
+  updatePropertyById,
+  getPropertyRequestById,
+  getPropertyById,
+  setPropertyAsRented
 
 } = require("../database");
 
@@ -36,12 +45,13 @@ const landloardDashboardController = async (req, res) => {
     }
   }))
 
-
-  res.render("pages/landlord", {
+  const context = {
     user: user,
     propertyDrafts: propertyDraftsWithImages,
     properties: propertiesWithImages
-  });
+  }
+
+  res.render("pages/landlord", context);
 }
 
 
@@ -121,9 +131,32 @@ const deletePropertyDraftController = async (req, res) => {
   }
 }
 
+
+const approvePropertyRequestController = async (req, res) => {
+  const user = await req.user
+  const requestId = req.params.id
+  const request = await getPropertyRequestById(requestId)
+  const propertyID = request.property_id
+  const property = await getPropertyById(propertyID)
+  const tenant = await getUserById(request.tenant_id)
+  if (property && tenant) {
+    try {
+      await setPropertyAsRented(propertyID, tenant.id)
+      await deletePropertyRequestById(requestId)
+      res.redirect("/dashboard/landloard")
+    } catch (error) {
+      res.redirect("/dashboard/landloard")
+    }
+  } else {
+    res.redirect("/dashboard/landloard")
+  }
+}
+
+
 module.exports = {
   landloardDashboardController,
   createPropertyDraftController,
   updatePropertyDraftController,
-  deletePropertyDraftController
+  deletePropertyDraftController,
+  approvePropertyRequestController
 }

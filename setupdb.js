@@ -3,11 +3,11 @@ const fs = require('fs');
 
 
 const connection = mysql.createConnection({
-  host: "containers-us-west-157.railway.app",
+  host: "containers-us-west-2.railway.app",
   user: "root",
-  password: "9lti4WyqKDACAzJz4N7l",
+  password: "MjtsUy2jNHyKSzvDMOiX",
   database: "railway",
-  port: 7721
+  port: 6729
 })
 
 const sql_commands_file = "./schema.sql"

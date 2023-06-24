@@ -3,11 +3,11 @@
 const mysql = require("mysql2")
 
 const pool = mysql.createPool({
-  host: "containers-us-west-157.railway.app",
+  host: "containers-us-west-2.railway.app",
   user: "root",
-  password: "9lti4WyqKDACAzJz4N7l",
+  password: "MjtsUy2jNHyKSzvDMOiX",
   database: "railway",
-  port: 7721
+  port: 6729
 }).promise()
 
 
@@ -38,7 +38,7 @@ async function getUserById(id) {
 
 // Function that gets a property from property table by id
 async function getPropertyById(id) {
-  const queryString = `SELECT * FROM property WHERE id = ?`
+  const queryString = `SELECT * FROM properties WHERE id = ?`
 
   const result = await pool.query(queryString, [id])
   const property = result[0][0]
@@ -50,7 +50,7 @@ async function getPropertyById(id) {
 }
 
 async function getPropertiesForLandlord(landlordId) {
-  const queryString = `SELECT * FROM property WHERE landlord = ?`
+  const queryString = `SELECT * FROM properties WHERE landlord = ?`
 
   const query = await pool.query(queryString, [landlordId])
   const properties = query[0]
@@ -58,7 +58,7 @@ async function getPropertiesForLandlord(landlordId) {
 }
 
 async function getPropertiesForTenant(tenantId) {
-  const queryString = `SELECT * FROM property WHERE tenant = ?`
+  const queryString = `SELECT * FROM properties WHERE tenant = ?`
 
   const query = await pool.query(queryString, [tenantId])
   const properties = query[0]
@@ -67,7 +67,7 @@ async function getPropertiesForTenant(tenantId) {
 
 
 async function createProperty(title, description, price, address, type, bedrooms, landlord) {
-  const queryString = `INSERT INTO property (title, description, price, address, type, bedrooms, landlord) values (?, ?, ?, ?, ?, ?, ?)`
+  const queryString = `INSERT INTO properties (title, description, price, address, type, bedrooms, landlord) values (?, ?, ?, ?, ?, ?, ?)`
 
   const query = await pool.query(queryString, [title, description, price, address, type, bedrooms, landlord])
   const property = query[0]
@@ -209,10 +209,11 @@ async function getPropertyDrafts() {
 
 
 async function createPropertyFromDraft(propertyDraftId) {
-  const queryString = `INSERT INTO property (title, description, price, address, type, bedrooms, landlord) SELECT title, description, price, address, type, bedrooms, landlord FROM property_drafts WHERE id = ?`
+  const queryString = `INSERT INTO properties (title, description, price, address, type, bedrooms, landlord) SELECT title, description, price, address, type, bedrooms, landlord FROM property_drafts WHERE id = ?`
 
   const query = await pool.query(queryString, [propertyDraftId])
-  return query
+  console.log(query)
+  return query[0]
 }
 
 
@@ -249,7 +250,7 @@ async function deletePropertyLike(propertyId, userId) {
 }
 
 async function getEditedProperties() {
-  const queryString = `SELECT * FROM property WHERE edited = 1`
+  const queryString = `SELECT * FROM properties WHERE edited = 1`
 
   const query = await pool.query(queryString)
   const properties = query[0]
@@ -257,12 +258,48 @@ async function getEditedProperties() {
 }
 
 async function approveEditedProperty(propertyId) {
-  const queryString = `UPDATE property SET edited = 0 WHERE id = ?`
+  const queryString = `UPDATE properties SET edited = 0 WHERE id = ?`
 
   const query = await pool.query(queryString, [propertyId])
 
   return query
 }
+
+
+// get all properties, order by created_at
+async function getProperties() {
+  const queryString = `SELECT * FROM properties ORDER BY created_at DESC`
+
+  const query = await pool.query(queryString)
+
+  const properties = query[0]
+
+  return properties
+}
+
+
+// Delete Property Request
+async function deletePropertyRequestById(id) {
+  const queryString = `DELETE FROM property_requests WHERE id = ?`
+
+  const query = await pool.query(queryString, [id])
+  return query
+}
+
+
+
+async function setPropertyAsRented(propertyId, tenantId) {
+  const queryString = `UPDATE properties SET tenant = ?, rented = 1 WHERE id = ?`
+
+  const query = await pool.query(queryString, [tenantId, propertyId])
+
+  return query
+}
+
+
+
+
+
 
 
 module.exports = {
@@ -295,5 +332,8 @@ module.exports = {
   getEditedProperties,
   createPropertyLike,
   deletePropertyLike,
-  approveEditedProperty
+  approveEditedProperty,
+  getProperties,
+  deletePropertyRequestById,
+  setPropertyAsRented,
 }

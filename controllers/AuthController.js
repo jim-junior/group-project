@@ -11,6 +11,8 @@ const {
   getPropertyDraftImages,
 
 } = require("../database");
+const bcrypt = require("bcrypt")
+
 
 
 const registerUser = async (req, res) => {
@@ -29,9 +31,11 @@ const registerUser = async (req, res) => {
       try {
         // Hash password
         const hashedPass = await bcrypt.hash(password, 10)
-        createUser(name, hashedPass, email, phone, type)
+        const result = await createUser(name, hashedPass, email, phone, type)
+        console.log(result)
         res.redirect("/auth?action=login")
       } catch (error) {
+        console.log(error)
         res.render("pages/auth", {
           messages: {
             signupError: "Error creating user"

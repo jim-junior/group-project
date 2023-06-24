@@ -37,86 +37,31 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
-            <div class="card explore-properties-card">
-              <!--A random image of a house-->
-              <img class="card-img-top" src="https://loremflickr.com/320/240/house?random=1" alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Property 1</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
-                <!--Price-->
-                <p class="card-subtitle mb-2 text-body-secondary">Price: UGX 100,000</p>
-                <a href="#" class="btn btn-primary">View Property</a>
+          <% if (properties) {%>
+            <% properties.map((property, i)=> { %>
+              <div class="col-md-4">
+                <div class="card explore-properties-card">
+                  <!--A random image of a house-->
+                  <img class="card-img-top" src="<%= property.images[0]?.url %>">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <%= property.title %>
+                    </h5>
+                    <p class="card-text">
+                      <%= property.description %>
+                    </p>
+                    <!--Price-->
+                    <p class="card-subtitle mb-2 text-body-secondary">Price: UGX <%= property.price %>
+                    </p>
+                    <a href="/property/<%= property.id %>" class="btn btn-primary">View Property</a>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+              <% }) %>
+                <% } %>
 
-          <div class="col-md-4">
-            <div class="card explore-properties-card">
-              <!--A random image of a house-->
-              <img class="card-img-top" src="https://loremflickr.com/320/240/house?random=2" alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Property 1</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
-                <!--Price-->
-                <p class="card-subtitle mb-2 text-body-secondary">Price: UGX 100,000</p>
-                <a href="#" class="btn btn-primary">View Property</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card explore-properties-card">
-              <!--A random image of a house-->
-              <img class="card-img-top" src="https://loremflickr.com/320/240/house?random=3" alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Property 1</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
-                <!--Price-->
-                <p class="card-subtitle mb-2 text-body-secondary">Price: UGX 100,000</p>
-                <a href="#" class="btn btn-primary">View Property</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card explore-properties-card">
-              <!--A random image of a house-->
-              <img class="card-img-top" src="https://loremflickr.com/320/240/house?random=4" alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Property 1</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
-                <!--Price-->
-                <p class="card-subtitle mb-2 text-body-secondary">Price: UGX 100,000</p>
-                <a href="#" class="btn btn-primary">View Property</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card explore-properties-card">
-              <!--A random image of a house-->
-              <img class="card-img-top" src="https://loremflickr.com/320/240/house?random=5" alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Property 1</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
-                <!--Price-->
-                <p class="card-subtitle mb-2 text-body-secondary">Price: UGX 100,000</p>
-                <a href="#" class="btn btn-primary">View Property</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card explore-properties-card">
-              <!--A random image of a house-->
-              <img class="card-img-top" src="https://loremflickr.com/320/240/house?random=6" alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Property 1</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
-                <!--Price-->
-                <p class="card-subtitle mb-2 text-body-secondary">Price: UGX 100,000</p>
-                <a href="#" class="btn btn-primary">View Property</a>
-              </div>
-            </div>
-          </div>
         </div>
+
       </div>
     </section>
 
