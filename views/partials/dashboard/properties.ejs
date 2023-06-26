@@ -24,11 +24,93 @@
                 <!--Price-->
                 <p class="card-subtitle mb-2 text-body-secondary">Price: UGX <%= property.price %>
                 </p>
-                <a href="#" class="btn btn-success"><i class="bi bi-pencil-square"></i> Edit </a>
+                <a href="#" class="btn btn-success" data-bs-toggle="modal"
+                  data-bs-target="#propetyModal<%= property.id %>">
+                  <i class="bi bi-pencil-square"></i> Edit
+                </a>
                 <a href="/dashboard/landlord/property/<%= property.id %>/delete" class="btn btn-danger"><i
                     class="bi bi-trash"></i> Delete </a>
               </div>
             </div>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="propetyModal<%= property.id %>" tabindex="-1"
+              aria-labelledby="propetyModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="propetyModalLabel">Edit Property</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <!-- Form -->
+
+                    <form action="/dashboard/landlord/create-property" method="post" enctype="multipart/form-data">
+
+                      <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input name="title" value="<%= property.title %>" type="text" class="form-control" id="title"
+                          aria-describedby="nameHelp" required>
+                        <div id="nameHelp" class="form-text">Enter name of your property</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input name="address" value="<%= property.address %>" type="text" class="form-control"
+                          id="address" aria-describedby="addressHelp" required>
+                        <div id="addressHelp" class="form-text">Enter address of your property</div>
+
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <input name="price" value="<%= property.price %>" type="text" class="form-control" id="price"
+                          aria-describedby="priceHelp" required>
+                        <div id="priceHelp" class="form-text">Enter price of your property</div>
+
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <input name="type" value="<%= property.type %>" type="text" class="form-control" id="type"
+                          aria-describedby="typeHelp" required>
+                        <div id="typeHelp" class="form-text">Enter type of your property</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="bedrooms" class="form-label">Bedrooms</label>
+                        <input name="bedrooms" value="<%= property.bedrooms %>" type="text" class="form-control"
+                          id="bedrooms" aria-describedby="bedroomsHelp" required>
+                        <div id="bedroomsHelp" class="form-text">Enter number of bedrooms in your property</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea value="<%= property.description %>" name="description" type="text"
+                          class="form-control" id="description" aria-describedby="descriptionHelp" required></textarea>
+                        <div id="descriptionHelp" class="form-text">Enter description of your property</div>
+                      </div>
+
+
+
+                      <button type="submit" class="btn btn-primary">Submit</button>
+
+
+
+                    </form>
+
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
           </div>
           <% }) %>
             <% } else { %>

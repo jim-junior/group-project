@@ -1,0 +1,65 @@
+<!-- Uses Bootstrap -->
+
+
+<h2>Property Requests</h2>
+<hr />
+
+<p>Here you can view all the property requests you have made. You can also view the status of the request.</p>
+
+<!-- A Bootstrap table showing the requests -->
+<table class="table table-striped table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col"><strong>ID</strong></th>
+      <th scope="col"><strong>Tenant Name</strong></th>
+      <th scope="col"><strong>Tenant Phone</strong></th>
+      <th scope="col"><strong>Property Name</strong></th>
+      <th scope="col"><strong>Property Address</strong></th>
+      <th scope="col"><strong>Property Price</strong></th>
+      <th scope="col"><strong>Property Type</strong></th>
+      <th scope="col"><strong>Actions</strong></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% propertyRequests.forEach(propertyRequest=> { %>
+      <% const {property, tenant}=propertyRequest %>
+        <tr>
+          <td>
+            <%= propertyRequest.id %>
+          </td>
+          <td>
+            <%= tenant.name %>
+          </td>
+          <td>
+            <%= tenant.phonenumber %>
+          </td>
+          <td>
+            <%= property.title %>
+          </td>
+          <td>
+            <%= property.address %>
+          </td>
+          <td>
+            <%= property.type.toUpperCase() %>
+          </td>
+          <td>
+            <%= property.price %>
+          </td>
+          <td class="d-flex">
+            <form action="/dashboard/landlord/property-request/<%= propertyRequest.id %>/approve" method="get">
+              <button type="submit" class="btn btn-success">
+                <i class="bi bi-check2-circle"></i>
+                Accept
+              </button>
+            </form>
+            <form action="/dashboard/landlord/property-request/<%= propertyRequest.id %>/decline" method="get">
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-archive"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+  </tbody>
+</table>

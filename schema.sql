@@ -20,7 +20,9 @@ CREATE TABLE properties (
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     landlord INTEGER NOT NULL,
     tenant INTEGER,
-    edited BOOLEAN NOT NULL DEFAULT FALSE
+    edited BOOLEAN NOT NULL DEFAULT FALSE,
+    rating_points INTEGER,
+    reviews INTEGER,
 );
 
 CREATE TABLE property_drafts (

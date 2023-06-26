@@ -22,7 +22,8 @@ const propertyRequestController = async (req, res) => {
     const { id } = req.params
     const user = await req.user
     const property = await getPropertyById(id)
-    const propertyRequest = await createPropertyRequest(user.id, property.id, property.landlord)
+    console.log(property)
+    const propertyRequest = await createPropertyRequest(property.id, user.id, property.landlord)
     res.redirect("/dashboard/tenant")
   } catch (error) {
     console.log(error)

@@ -6,7 +6,8 @@ const {
   getUserByEmail,
   getUserById,
   getProperties,
-  getPropertyImages
+  getPropertyImages,
+  pool
 } = require("./database");
 const initializePassport = require("./passport.config")
 const passport = require("passport")
@@ -18,7 +19,8 @@ const {
   createPropertyDraftController,
   updatePropertyDraftController,
   deletePropertyDraftController,
-  approvePropertyRequestController
+  approvePropertyRequestController,
+  declinePropertyRequestController
 } = require("./controllers/LandloardController");
 const {
   adminDashboardController,
@@ -123,9 +125,16 @@ app.get("/dashboard/landlord/property-draft/:id/delete", checkAuthenticated, del
 
 app.get("/dashboard/landlord/property-request/:id/approve", checkAuthenticated, approvePropertyRequestController)
 
+app.get("/dashboard/landlord/property-request/:id/decline", checkAuthenticated, declinePropertyRequestController)
+
 
 
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
+
+// inform when pool is connected
+pool.on('connect', () => {
+  console.log('connected to the db');
+})

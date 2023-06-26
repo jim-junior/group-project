@@ -1,7 +1,5 @@
-//@ts-check
+
 const {
-  createUser,
-  getUserByEmail,
   getUserById,
   getPropertiesForLandlord,
   createPropertyDraft,
@@ -17,13 +15,16 @@ const {
   updatePropertyById,
   getPropertyRequestById,
   getPropertyById,
-  setPropertyAsRented
+  setPropertyAsRented,
+  getPropertyRequestsForLandlord,
+
 
 } = require("../database");
 
 
 
 const landloardDashboardController = async (req, res) => {
+  console.log("landloardDashboardController")
   const user = await req.user
   // Get all property drafts for landlord with their images 
   const propertyDrafts = await getPropertyDraftsForLandlord(user.id)
@@ -45,10 +46,26 @@ const landloardDashboardController = async (req, res) => {
     }
   }))
 
+  const propertyRequests = await getPropertyRequestsForLandlord(user.id)
+
+  const propertyRequestsWithTenant = await Promise.all(propertyRequests.map(async (propertyRequest) => {
+    const tenant = await getUserById(propertyRequest.tenant_id)
+    const property = await getPropertyById(propertyRequest.property_id)
+    return {
+      ...propertyRequest,
+      tenant,
+      property
+    }
+  }))
+
+  console.log(propertyRequestsWithTenant)
+
+
   const context = {
     user: user,
     propertyDrafts: propertyDraftsWithImages,
-    properties: propertiesWithImages
+    properties: propertiesWithImages,
+    propertyRequests: propertyRequestsWithTenant
   }
 
   res.render("pages/landlord", context);
@@ -152,11 +169,25 @@ const approvePropertyRequestController = async (req, res) => {
   }
 }
 
+const declinePropertyRequestController = async (req, res) => {
+  const user = await req.user
+  const requestId = req.params.id
+  const request = await getPropertyRequestById(requestId)
+  if (request) {
+    try {
+      await deletePropertyRequestById(requestId)
+      res.redirect("/")
+    } catch (error) {
+      res.redirect("/")
+    }
+  }
+}
 
 module.exports = {
   landloardDashboardController,
   createPropertyDraftController,
   updatePropertyDraftController,
   deletePropertyDraftController,
-  approvePropertyRequestController
+  approvePropertyRequestController,
+  declinePropertyRequestController
 }

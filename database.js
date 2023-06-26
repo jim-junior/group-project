@@ -42,6 +42,7 @@ async function getPropertyById(id) {
 
   const result = await pool.query(queryString, [id])
   const property = result[0][0]
+  console.log(result)
   if (property) {
     return property
   } else {
@@ -336,4 +337,5 @@ module.exports = {
   getProperties,
   deletePropertyRequestById,
   setPropertyAsRented,
+  pool
 }
