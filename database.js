@@ -3,11 +3,11 @@
 const mysql = require("mysql2")
 
 const pool = mysql.createPool({
-  host: "containers-us-west-2.railway.app",
+  host: "containers-us-west-103.railway.app",
   user: "root",
-  password: "MjtsUy2jNHyKSzvDMOiX",
+  password: "gaCv4GRenj0eTSpdSzXM",
   database: "railway",
-  port: 6729
+  port: 6179
 }).promise()
 
 

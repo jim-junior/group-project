@@ -22,7 +22,7 @@ CREATE TABLE properties (
     tenant INTEGER,
     edited BOOLEAN NOT NULL DEFAULT FALSE,
     rating_points INTEGER,
-    reviews INTEGER,
+    reviews INTEGER
 );
 
 CREATE TABLE property_drafts (
